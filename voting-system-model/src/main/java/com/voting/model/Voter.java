@@ -4,7 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Voter {
@@ -14,6 +17,9 @@ public class Voter {
     private long id;
 
     private String name;
+
+    @ManyToMany(mappedBy = "voters")
+    private Set<Voting> votings = new HashSet<>();
 
     public Voter() {
         //
@@ -39,16 +45,25 @@ public class Voter {
         this.name = name;
     }
 
+    public Set<Voting> getVotings() {
+        return votings;
+    }
+
+    public void setVotings(Set<Voting> votings) {
+        this.votings = votings;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Voter voter = (Voter) o;
-        return Objects.equals(name, voter.name);
+        return Objects.equals(name, voter.name) &&
+                Objects.equals(votings, voter.votings);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(name, votings);
     }
 }

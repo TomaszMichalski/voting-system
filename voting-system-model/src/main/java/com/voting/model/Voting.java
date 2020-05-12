@@ -5,11 +5,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Voting {
@@ -28,6 +33,14 @@ public class Voting {
 
     @OneToMany(mappedBy = "voting", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "REGISTERED_VOTERS",
+            joinColumns = { @JoinColumn(name = "voting_id") },
+            inverseJoinColumns = { @JoinColumn(name = "voter_id") }
+    )
+    private Set<Voter> voters = new HashSet<>();
 
     public long getId() {
         return id;
@@ -77,6 +90,14 @@ public class Voting {
         this.options = options;
     }
 
+    public Set<Voter> getVoters() {
+        return voters;
+    }
+
+    public void setVoters(Set<Voter> voters) {
+        this.voters = voters;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -86,11 +107,12 @@ public class Voting {
                 Objects.equals(name, voting.name) &&
                 Objects.equals(start, voting.start) &&
                 Objects.equals(end, voting.end) &&
-                Objects.equals(options, voting.options);
+                Objects.equals(options, voting.options) &&
+                Objects.equals(voters, voting.voters);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, start, end, singleChoice, options);
+        return Objects.hash(name, start, end, singleChoice, options, voters);
     }
 }
