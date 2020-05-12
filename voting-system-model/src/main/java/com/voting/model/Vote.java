@@ -72,13 +72,13 @@ public class Vote {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vote vote = (Vote) o;
-        return Objects.equals(voter, vote.voter) &&
-                Objects.equals(option, vote.option) &&
+        return Objects.equals(voter.getId(), vote.voter.getId()) &&
+                Objects.equals(option.getId(), vote.option.getId()) &&
                 Objects.equals(dateTime, vote.dateTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(voter, option, dateTime);
+        return Objects.hash(voter.getId(), option.getId(), dateTime);
     }
 }

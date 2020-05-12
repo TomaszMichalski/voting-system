@@ -1,6 +1,5 @@
 package com.voting.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -59,11 +58,11 @@ public class Option {
         if (o == null || getClass() != o.getClass()) return false;
         Option option = (Option) o;
         return Objects.equals(name, option.name) &&
-                Objects.equals(voting, option.voting);
+                Objects.equals(voting.getId(), option.voting.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, voting);
+        return Objects.hash(name, voting.getId());
     }
 }

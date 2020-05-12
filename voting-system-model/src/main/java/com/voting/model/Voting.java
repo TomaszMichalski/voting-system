@@ -106,13 +106,11 @@ public class Voting {
         return singleChoice == voting.singleChoice &&
                 Objects.equals(name, voting.name) &&
                 Objects.equals(start, voting.start) &&
-                Objects.equals(end, voting.end) &&
-                Objects.equals(options, voting.options) &&
-                Objects.equals(voters, voting.voters);
+                Objects.equals(end, voting.end);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, start, end, singleChoice, options, voters);
+        return Objects.hash(name, start, end, singleChoice);
     }
 }

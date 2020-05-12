@@ -58,12 +58,11 @@ public class Voter {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Voter voter = (Voter) o;
-        return Objects.equals(name, voter.name) &&
-                Objects.equals(votings, voter.votings);
+        return Objects.equals(name, voter.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, votings);
+        return Objects.hash(name);
     }
 }
