@@ -19,6 +19,7 @@
    </properties>
    <modules>
       <module>voting-system-model</module>
+      <module>voting-system-db</module>
       <module>voting-system-service</module>
    </modules>
    <dependencies>

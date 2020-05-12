@@ -1,16 +1,13 @@
 package com.voting.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 @Entity
-public class Option {
+public class Voter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,14 +15,11 @@ public class Option {
 
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Voting voting;
-
-    public Option() {
+    public Voter() {
         //
     }
 
-    public Option(String name) {
+    public Voter(String name) {
         this.name = name;
     }
 
@@ -45,25 +39,16 @@ public class Option {
         this.name = name;
     }
 
-    public Voting getVoting() {
-        return voting;
-    }
-
-    public void setVoting(Voting voting) {
-        this.voting = voting;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Option option = (Option) o;
-        return Objects.equals(name, option.name) &&
-                Objects.equals(voting, option.voting);
+        Voter voter = (Voter) o;
+        return Objects.equals(name, voter.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, voting);
+        return Objects.hash(name);
     }
 }
