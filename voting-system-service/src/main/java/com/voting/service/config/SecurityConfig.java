@@ -1,5 +1,6 @@
 package com.voting.service.config;
 
+import com.voting.model.RoleName;
 import com.voting.service.security.CustomUserDetailsService;
 import com.voting.service.security.JwtAuthenticationEntryPoint;
 import com.voting.service.security.JwtAuthenticationFilter;
@@ -18,10 +19,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.header.writers.frameoptions.WhiteListedAllowFromStrategy;
-import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -33,7 +30,7 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    CustomUserDetailsService customUserDetailsService;
+    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
@@ -79,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/",
                         "/favicon.ico",
-                        "/**/*.png",
+                        "/**/*.png ",
                         "/**/*.gif",
                         "/**/*.svg",
                         "/**/*.jpg",
