@@ -12,9 +12,9 @@ class ResultsReceiver:
     exchangeName = 'bunny_exchange'
 
     def main(self):
-        print('[ResultsReceiver] starting ...')
+        print('[ResultsReceiver] Starting ...')
         channel = self.create_channel()
-        print('[ResultsReceiver] connection and channel created.')
+        print('[ResultsReceiver] Connection and channel created.')
         self.loop_user_input(channel)
 
     def loop_user_input(self, channel):
