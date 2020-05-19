@@ -31,7 +31,7 @@ class DateRangeValidator implements ConstraintValidator<ValidDateRange, Object> 
         if (!(startObject instanceof LocalDateTime) || !(endObject instanceof LocalDateTime)) {
             throw new IllegalArgumentException("Illegal method signature, expected two parameters of type LocalDateTime.");
         }
-        return ((LocalDateTime) startObject).isAfter(LocalDateTime.now())
+        return ((LocalDateTime) endObject).isAfter(LocalDateTime.now())
                 && ((LocalDateTime) startObject).isBefore((LocalDateTime) endObject);
 
     }

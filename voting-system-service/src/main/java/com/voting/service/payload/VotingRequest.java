@@ -1,6 +1,7 @@
 package com.voting.service.payload;
 
 import com.voting.service.validator.ValidDateRange;
+import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter
 @ValidDateRange(start = "start", end = "end")
 public class VotingRequest {
 
@@ -37,29 +39,5 @@ public class VotingRequest {
 
     @NotEmpty
     private List<Long> voterIds;
-
-    public String getName() {
-        return name;
-    }
-
-    public LocalDateTime getStart() {
-        return start;
-    }
-
-    public LocalDateTime getEnd() {
-        return end;
-    }
-
-    public boolean isSingleChoice() {
-        return singleChoice;
-    }
-
-    public List<OptionRequest> getOptions() {
-        return options;
-    }
-
-    public List<Long> getVoterIds() {
-        return voterIds;
-    }
 
 }

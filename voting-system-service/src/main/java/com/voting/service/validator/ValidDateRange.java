@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 public @interface ValidDateRange {
 
     @SuppressWarnings("unused")
-    String message() default "End date must be after begin date and both must be in the future";
+    String message() default "Start date must be before end date and end date must be in the future";
 
     @SuppressWarnings("unused")
     Class<?>[] groups() default {};

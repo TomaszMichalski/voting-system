@@ -1,7 +1,11 @@
 package com.voting.service.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.voting.model.RoleName;
 import com.voting.model.Voter;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,28 +15,26 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {
 
-    private long id;
+    @Getter
+    @NonNull
+    private final long id;
 
-    private String name;
+    @NonNull
+    private final String name;
 
+    @NonNull
     @JsonIgnore
-    private String email;
+    private final String email;
 
+    @NonNull
     @JsonIgnore
-    private String password;
+    private final String password;
 
-    private Collection<? extends GrantedAuthority> authorities;
-
-    public UserPrincipal(Long id, String name, String email, String password,
-                         Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
-    }
+    @NonNull
+    private final Collection<? extends GrantedAuthority> authorities;
 
     public static UserPrincipal create(Voter voter) {
         List<GrantedAuthority> authorities = voter.getRoles()
@@ -49,16 +51,8 @@ public class UserPrincipal implements UserDetails {
         );
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
+    public boolean isAdmin() {
+        return authorities.stream().anyMatch(e -> e.getAuthority().equals(RoleName.ADMIN.name()));
     }
 
     @Override
@@ -108,4 +102,5 @@ public class UserPrincipal implements UserDetails {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }
