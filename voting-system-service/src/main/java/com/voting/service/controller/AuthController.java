@@ -67,7 +67,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
         if(voterRepository.existsByEmail(registerRequest.getEmail())) {
-            return new ResponseEntity(new ApiResponse(false, "Email is already in use."),
+            return new ResponseEntity<>(new ApiResponse(false, "Email is already in use."),
                     HttpStatus.BAD_REQUEST);
         }
 

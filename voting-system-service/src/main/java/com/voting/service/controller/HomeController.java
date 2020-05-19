@@ -17,8 +17,8 @@ public class HomeController {
 
     @RequestMapping("/test")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity adminTest() {
-        return new ResponseEntity(new ApiResponse(true, "You're an admin."),
+    public ResponseEntity<?> adminTest() {
+        return new ResponseEntity<>(new ApiResponse(true, "You're an admin."),
                 HttpStatus.OK);
     }
 }
