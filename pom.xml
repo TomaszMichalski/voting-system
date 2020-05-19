@@ -21,6 +21,7 @@
       <module>voting-system-model</module>
       <module>voting-system-db</module>
       <module>voting-system-service</module>
+      <module>voting-system-message-broker</module>
    </modules>
    <dependencies>
       <dependency>
