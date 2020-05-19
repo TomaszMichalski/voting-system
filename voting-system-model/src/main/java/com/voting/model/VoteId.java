@@ -14,13 +14,17 @@ public class VoteId implements Serializable {
     @Column(name = "option_id")
     private Long optionId;
 
+    @Column(name = "voting_id")
+    private Long votingId;
+
     public VoteId() {
         //
     }
 
-    public VoteId(Long voterId, Long optionId) {
+    public VoteId(Long voterId, Long optionId, Long votingId) {
         this.voterId = voterId;
         this.optionId = optionId;
+        this.votingId = votingId;
     }
 
     public Long getVoterId() {
@@ -39,17 +43,26 @@ public class VoteId implements Serializable {
         this.optionId = optionId;
     }
 
+    public Long getVotingId() {
+        return votingId;
+    }
+
+    public void setVotingId(Long votingId) {
+        this.votingId = votingId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         VoteId voteId = (VoteId) o;
         return Objects.equals(voterId, voteId.voterId) &&
-                Objects.equals(optionId, voteId.optionId);
+                Objects.equals(optionId, voteId.optionId) &&
+                Objects.equals(votingId, voteId.votingId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(voterId, optionId);
+        return Objects.hash(voterId, optionId, votingId);
     }
 }
