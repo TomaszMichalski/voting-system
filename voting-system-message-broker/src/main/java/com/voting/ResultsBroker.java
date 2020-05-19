@@ -10,12 +10,9 @@ public class ResultsBroker {
 	
 	public static void main(String[] args) {
 		System.out.println("Hello from results broker");
-		ResultsSender resultsSender = new ResultsSender(messageBrokerIp,
-				messageBrokerUser,
-				messageBrokerPwd,
-				messageBrokerVirtualHost,
-				exchangeName,
-				"fanout");
+    	ConnectionData connectionData = new ConnectionData(messageBrokerIp, messageBrokerUser, messageBrokerPwd, messageBrokerVirtualHost);
+    	ExchangeData exchangeData = new ExchangeData(exchangeName, "fanout");
+		MessageBroker resultsSender = new MessageBroker(connectionData, exchangeData);
 		resultsSender.loopUserInput();
 	}
 	

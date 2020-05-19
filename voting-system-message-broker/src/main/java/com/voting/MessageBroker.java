@@ -13,25 +13,16 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public class ResultsSender {
+public class MessageBroker {
 
-    public String ip;
-    public String user;
-    public String pwd;
-    public String virtualHost;
-    public String exchangeName;
-    public String exchangeType;
+	public ConnectionData connectionData;
+	public ExchangeData exchangeData;
 	private String typePrezydenckie = "WYBORY PREZYDENCKIE 2020";
 	private Channel channel;
-
-    public ResultsSender(String ip, String user, String pwd,
-    		String virtualHost, String exchangeName, String exchangeType) {
-    	this.ip = ip;
-    	this.user = user;
-    	this.pwd = pwd;
-    	this.virtualHost = virtualHost;
-    	this.exchangeName = exchangeName;
-    	this.exchangeType = exchangeType;
+    
+    public MessageBroker(ConnectionData connectionData, ExchangeData exchangeData) {
+    	this.connectionData = connectionData;
+    	this.exchangeData = exchangeData;
     	channel = null;
         try {
             channel = createChannel();
@@ -64,7 +55,7 @@ public class ResultsSender {
             System.out.println("[Press enter to send next results] > ");
             try {
                 String messageContent = bufferedReader.readLine();
-                channel.basicPublish(exchangeName, "", properties, messageContent.getBytes());
+                channel.basicPublish(exchangeData.name, "", properties, messageContent.getBytes());
             } catch (IOException e) {
             }
         }
@@ -72,14 +63,14 @@ public class ResultsSender {
 
     protected Channel createChannel() throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(ip);
-        factory.setUsername(user);
-        factory.setPassword(pwd);
-        factory.setVirtualHost(virtualHost);
+        factory.setHost(connectionData.ip);
+        factory.setUsername(connectionData.user);
+        factory.setPassword(connectionData.pwd);
+        factory.setVirtualHost(connectionData.virtualHost);
 
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
-        channel.exchangeDeclare(exchangeName, "fanout");
+        channel.exchangeDeclare(exchangeData.name, exchangeData.type);
 
         return channel;
     }
