@@ -15,20 +15,27 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ResultsSender {
 
-    public final static String messageBrokerIp = "127.0.0.1";
-    public final static String messageBrokerUser = "bunny";
-    public final static String messageBrokerPwd = "bunny1234";
-    public final static String messageBrokerVirtualHost = "bunny_host";
-    public final static String exchangeName =  "bunny_exchange";
-    private final static String typePrezydenckie = "WYBORY PREZYDENCKIE 2020";
+    public String ip;
+    public String user;
+    public String pwd;
+    public String virtualHost;
+    public String exchangeName;
+    public String exchangeType;
+	private String typePrezydenckie = "WYBORY PREZYDENCKIE 2020";
+	private Channel channel;
 
-    public static void main(String[] args) {
-
-        System.out.println(" [ResultsSender] Starting...");
-
-        Channel channel = null;
+    public ResultsSender(String ip, String user, String pwd,
+    		String virtualHost, String exchangeName, String exchangeType) {
+    	this.ip = ip;
+    	this.user = user;
+    	this.pwd = pwd;
+    	this.virtualHost = virtualHost;
+    	this.exchangeName = exchangeName;
+    	this.exchangeType = exchangeType;
+    	channel = null;
         try {
             channel = createChannel();
+            //TODO: change to log
             System.out.println(" [ResultsSender] Connection and channel created.");
         } catch (IOException e) {
             e.printStackTrace();
@@ -37,17 +44,16 @@ public class ResultsSender {
             e.printStackTrace();
             return;
         }
-
-        loopUserInput(channel);
+ 
     }
 
-    protected static void loopUserInput(Channel channel)
+    public void loopUserInput()
     {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
         AMQP.BasicProperties properties = new AMQP.BasicProperties();
         HashMap <String, Object> headersMap = new HashMap<String, Object>();
-        headersMap.put("Candidate 2", 0);
+        headersMap.put("Candidate 1", 0);
         headersMap.put("Candidate 2", 0);
         headersMap.put("Candidate 3", 0);
         while (true) {
@@ -64,12 +70,12 @@ public class ResultsSender {
         }
     }
 
-    protected static Channel createChannel() throws IOException, TimeoutException {
+    protected Channel createChannel() throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(messageBrokerIp);
-        factory.setUsername(messageBrokerUser);
-        factory.setPassword(messageBrokerPwd);
-        factory.setVirtualHost(messageBrokerVirtualHost);
+        factory.setHost(ip);
+        factory.setUsername(user);
+        factory.setPassword(pwd);
+        factory.setVirtualHost(virtualHost);
 
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
