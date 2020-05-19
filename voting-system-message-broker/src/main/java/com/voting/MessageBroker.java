@@ -5,12 +5,9 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-//import java.io.BufferedReader;
-import java.io.IOException;
-//import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.io.IOException;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.ThreadLocalRandom;
 
 
 public class MessageBroker {
@@ -22,7 +19,13 @@ public class MessageBroker {
     	this.exchangeData = exchangeData;
     	this.channel = createChannel(connectionData);
     }
-
+    
+    public void publishEmptyMsg(String msgType, HashMap<String, Object> headersMap) throws IOException {
+        AMQP.BasicProperties properties = new AMQP.BasicProperties();
+        properties = properties.builder().headers(headersMap).type(msgType).build();
+        channel.basicPublish(exchangeData.name, "", properties, null);
+    }
+    
     private Channel createChannel(ConnectionData connectionData) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(connectionData.ip);
@@ -35,19 +38,5 @@ public class MessageBroker {
         channel.exchangeDeclare(exchangeData.name, exchangeData.type);
 
         return channel;
-    }
-    
-    public void loopUserInput(String type) throws IOException {
-        AMQP.BasicProperties properties = new AMQP.BasicProperties();
-        HashMap <String, Object> headersMap = new HashMap<String, Object>();
-        headersMap.put("Candidate 1", 0);
-        headersMap.put("Candidate 2", 0);
-        headersMap.put("Candidate 3", 0);
-    	headersMap.put("Candidate 1", (int)headersMap.get("Candidate 1") + ThreadLocalRandom.current().nextInt(0, 100));
-        headersMap.put("Candidate 2", (int)headersMap.get("Candidate 2") + ThreadLocalRandom.current().nextInt(0, 100));
-        headersMap.put("Candidate 3", (int)headersMap.get("Candidate 3") + ThreadLocalRandom.current().nextInt(0, 100));
-        properties = properties.builder().headers(headersMap).type(type).build();
-        channel.basicPublish(exchangeData.name, "", properties, null);
-
     }
 }
