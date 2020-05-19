@@ -28,8 +28,8 @@ public class Vote {
         //
     }
 
-    public Vote(Voter voter, Option option, LocalDateTime dateTime) {
-        this.id = new VoteId(voter.getId(), option.getId());
+    public Vote(Voter voter, Option option, Voting voting, LocalDateTime dateTime) {
+        this.id = new VoteId(voter.getId(), option.getId(), voting.getId());
         this.voter = voter;
         this.option = option;
         this.dateTime = dateTime;
