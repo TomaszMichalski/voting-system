@@ -1,36 +1,13 @@
-package com.voting.service.validation;
+package com.voting.service.validator;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 
-import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import javax.validation.Payload;
-import java.lang.annotation.*;
 import java.time.LocalDateTime;
 
-@Constraint(validatedBy = ConsistentDateParameterValidator.class)
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface ValidDateRange {
-
-    @SuppressWarnings("unused")
-    String message() default "End date must be after begin date and both must be in the future";
-
-    @SuppressWarnings("unused")
-    Class<?>[] groups() default {};
-
-    Class<? extends Payload>[] payload() default {};
-
-    String start();
-
-    String end();
-}
-
-class ConsistentDateParameterValidator
-        implements ConstraintValidator<ValidDateRange, Object> {
+class DateRangeValidator implements ConstraintValidator<ValidDateRange, Object> {
 
     private String startFieldName;
     private String endFieldName;

@@ -90,8 +90,9 @@ public class Voting {
         return options;
     }
 
-    public void setOptions(List<Option> options) {
-        this.options = options;
+    public void addOption(Option option) {
+        options.add(option);
+        option.setVoting(this);
     }
 
     public Set<Voter> getVoters() {

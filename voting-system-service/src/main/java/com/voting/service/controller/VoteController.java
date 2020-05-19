@@ -1,6 +1,5 @@
 package com.voting.service.controller;
 
-import com.voting.model.Vote;
 import com.voting.service.VoteService;
 import com.voting.service.payload.ApiResponse;
 import com.voting.service.payload.VoteRequest;
@@ -26,9 +25,9 @@ public class VoteController {
 
     @PostMapping("votings/{votingId}/votes")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity vote(@CurrentUser UserPrincipal currentUser,
-                               @PathVariable Long votingId,
-                               @Valid @RequestBody VoteRequest voteRequest) {
+    public ResponseEntity<?> vote(@CurrentUser UserPrincipal currentUser,
+                                  @PathVariable Long votingId,
+                                  @Valid @RequestBody VoteRequest voteRequest) {
         voteService.vote(votingId, voteRequest, currentUser);
 
         return ResponseEntity.ok().body(new ApiResponse(true, "Vote registered successfully."));
