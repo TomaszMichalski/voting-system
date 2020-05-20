@@ -4,7 +4,7 @@ import { Router, Route, Switch } from "react-router-dom";
 
 import { history } from 'redux_elems/_helpers/history';
 
-import ProfilePage from "views/ProfilePage/ProfilePage.js";
+import { ProfilePage } from "views/ProfilePage/ProfilePage.js";
 import { LoginPage } from "views/LoginPage/LoginPage.js";
 import { VotingPage } from "views/VotingPage/VotingPage.js";
 import { HomePage } from "views/HomePage/HomePage.js";

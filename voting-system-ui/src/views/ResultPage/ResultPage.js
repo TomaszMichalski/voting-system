@@ -50,7 +50,7 @@ export const ResultPage = () => {
   const dispatch = useDispatch();
   useEffect(() => dispatch(votingActions.getResults()), []);
 
-  return localStorage.getItem("user") ? (
+  return localStorage.getItem("token") ? (
     <div>
       <Menu />
       <Parallax filter image={require("assets/img/voting-bg.png")}>

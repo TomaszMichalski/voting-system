@@ -1,12 +1,14 @@
 import { voteConstants } from 'redux_elems/_constants/vote.constants';
 import { userService } from 'redux_elems/_services/user.services.js';
+import { votingService } from 'redux_elems/_services/voting.services.js';
 import { alertActions } from './alert.actions.js';
 import { history } from '../_helpers/history'
 
 export const votingActions = {
     vote,
     getResults,
-    getOptions
+    getOptions,
+    getVotings
 };
 
 function vote(candidate) {
@@ -73,4 +75,25 @@ function getResults() {
     function success(results) { return { type: voteConstants.VOTING_RESULT_SUCCESS, results } }
 
     function failure(error) { return { type: voteConstants.VOTING_RESULT_FAILURE, error } }
+}
+
+function getVotings() {
+    return dispatch => {
+        dispatch(request());
+
+        votingService.getVotings()
+            .then(
+                votings => dispatch(success(votings)),
+                error => {
+                    dispatch(failure(error));
+                    dispatch(alertActions.error(error))
+                }
+            );
+    };
+
+    function request() { return { type: voteConstants.USER_VOTING_REQUEST } }
+
+    function success(votings) { return { type: voteConstants.USER_VOTING_SUCCESS, votings } }
+
+    function failure(error) { return { type: voteConstants.USER_VOTING_FAILURE, error } }
 }

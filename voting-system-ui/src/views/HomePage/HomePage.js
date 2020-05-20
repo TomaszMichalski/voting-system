@@ -21,9 +21,7 @@ import styles from "assets/jss/material-kit-react/views/landingPage.js";
 const useStyles = makeStyles(styles);
 
 function HomePage(props) {
-  const { dispatch, user, users } = props;
-
-  useEffect(() => dispatch(userActions.getAll()), [])
+  const { dispatch } = props;
 
   console.log(props);
 

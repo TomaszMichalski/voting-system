@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
+
+import { votingActions } from 'redux_elems/_actions/vote.actions.js';
 
 // core components;
 import Footer from "components/Footer/Footer.js";
@@ -17,16 +20,21 @@ import styles from "assets/jss/material-kit-react/views/profilePage.js";
 
 const useStyles = makeStyles(styles);
 
-export default function ProfilePage(props) {
+export const ProfilePage = () => {
   const classes = useStyles();
   const imageClasses = classNames(
     classes.imgRaised,
     classes.imgRoundedCircle,
     classes.imgFluid
   );
+  const user = useSelector((state) => state.user);
+  const votings = useSelector((state) => state.votings.votings);
+  console.log(votings)
+  const dispatch = useDispatch();
+  useEffect(() => dispatch(votingActions.getVotings()), []);
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  return user ? (
+  const token = localStorage.getItem("token");
+  return token ? (
     <div>
       <Menu />
       <Parallax small filter image={require("assets/img/profile-bg.jpg")} />
@@ -40,21 +48,24 @@ export default function ProfilePage(props) {
                     <img src={avatar} alt="..." className={imageClasses} />
                   </div>
                   <div className={classes.name}>
-                    <h3 className={classes.title}>{`Welcome ${user.firstName} ${user.lastName}!`}</h3>
-                    <p>{`Nickname: ${user.username}`}</p>
-                    <p>{`First name: ${user.firstName}`}</p>
-                    <p>{`Last name: ${user.lastName}`}</p>
+                    <h3 className={classes.title}>{`Welcome ${user.name || user.email}!`}</h3>
                   </div>
                 </div>
               </GridItem>
             </GridContainer>
             <div className={classes.description}>
               <h3>See your voting:</h3>
-
-                  <a href="/voting-page">
-                    Presidental Election
-                  </a>
-  
+                {
+                  votings ? 
+                  <ul>
+                    {votings.map(voting => {
+                    return <li><a href="/voting-page">
+                      {voting.name} {'<3'}
+                    </a></li>
+                  })} 
+                  </ul>
+                  : null
+                }
             </div>
           </div>
         </div>

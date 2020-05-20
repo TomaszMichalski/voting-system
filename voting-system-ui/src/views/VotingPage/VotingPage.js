@@ -62,7 +62,7 @@ export const VotingPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(value);
+
     if (value) {
       setHelperText("You got it!");
       setError(false);
@@ -73,7 +73,7 @@ export const VotingPage = () => {
     }
   };
 
-  return localStorage.getItem("user") ? (
+  return localStorage.getItem("token") ? (
     <div>
       <Menu />
       <Parallax filter image={require("assets/img/voting-bg.png")}>
