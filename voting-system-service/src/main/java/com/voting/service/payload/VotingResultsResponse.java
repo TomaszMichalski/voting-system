@@ -6,11 +6,10 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Builder
 @Getter
-public class VotingResponse {
+public class VotingResultsResponse {
 
     private final Long id;
     private final String name;
@@ -18,9 +17,9 @@ public class VotingResponse {
     private final LocalDateTime end;
     private final Boolean isExpired;
     private final Boolean singleChoice;
-    private final List<OptionResponse> options;
+    private final List<OptionResultsResponse> options;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final Set<VoterSummary> voters;
+    private final List<Long> selectedOptionIds;
 
 }

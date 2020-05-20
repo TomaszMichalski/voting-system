@@ -36,7 +36,13 @@ public class VotingController {
     @GetMapping("/{votingId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     public ResponseEntity<?> getVotingById(@CurrentUser UserPrincipal currentUser, @PathVariable Long votingId) {
-        return ResponseEntity.ok(votingService.getVotingById(votingId, currentUser));
+        return ResponseEntity.ok(votingService.getVotingResponseById(votingId, currentUser));
+    }
+
+    @GetMapping("/{votingId}/results")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    public ResponseEntity<?> getVotingResultsById(@CurrentUser UserPrincipal currentUser, @PathVariable Long votingId) {
+        return ResponseEntity.ok(votingService.getVotingResultsById(votingId, currentUser));
     }
 
     @PostMapping

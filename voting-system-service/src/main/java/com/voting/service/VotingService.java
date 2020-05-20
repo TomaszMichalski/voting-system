@@ -1,14 +1,18 @@
 package com.voting.service;
 
+import com.voting.db.VoteRepository;
 import com.voting.db.VoterRepository;
 import com.voting.db.VotingRepository;
 import com.voting.model.Option;
+import com.voting.model.OptionVoteCount;
+import com.voting.model.Vote;
 import com.voting.model.Voter;
 import com.voting.model.Voting;
 import com.voting.service.exception.UnauthorizedException;
 import com.voting.service.exception.ResourceNotFoundException;
 import com.voting.service.payload.VotingRequest;
 import com.voting.service.payload.VotingResponse;
+import com.voting.service.payload.VotingResultsResponse;
 import com.voting.service.security.UserPrincipal;
 import com.voting.service.utils.VotingMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,10 +28,13 @@ import java.util.stream.Collectors;
 public class VotingService {
 
     @Autowired
-    private VotingRepository votingRepository;
+    private VoteRepository voteRepository;
 
     @Autowired
     private VoterRepository voterRepository;
+
+    @Autowired
+    private VotingRepository votingRepository;
 
     public List<VotingResponse> getAllVotings(UserPrincipal currentUser) {
         List<Voting> votings;
@@ -41,20 +49,41 @@ public class VotingService {
                 .collect(Collectors.toList());
     }
 
-    public VotingResponse getVotingById(Long votingId, UserPrincipal currentUser) {
-        boolean isAdmin = currentUser.isAdmin();
+    public VotingResponse getVotingResponseById(Long votingId, UserPrincipal currentUser) {
+        Voting voting = getVotingById(votingId, currentUser);
+        return VotingMapper.mapVotingToVotingResponse(voting, currentUser.isAdmin());
+    }
+
+    public VotingResultsResponse getVotingResultsById(Long votingId, UserPrincipal currentUser) {
+        Voting voting = getVotingById(votingId, currentUser);
+
+        List<OptionVoteCount> voteCounts = voteRepository.countByVotingIdGroupByOptionId(votingId);
+        Map<Long, Long> optionIdsToVoteCounts = voteCounts.stream()
+                .collect(Collectors.toMap(OptionVoteCount::getOptionId, OptionVoteCount::getVoteCount));
+
+        List<Long> userSelectedOptionIds = null;
+        if (!currentUser.isAdmin()) {
+            List<Vote> userVotes = voteRepository.findByVoter_IdAndVoter_Votings_Id(currentUser.getId(), votingId);
+            userSelectedOptionIds = userVotes.stream()
+                    .map(e -> e.getOption().getId())
+                    .collect(Collectors.toList());
+        }
+
+        return VotingMapper.mapVotingToVotingResultsResponse(voting, optionIdsToVoteCounts, userSelectedOptionIds);
+    }
+
+    private Voting getVotingById(Long votingId, UserPrincipal currentUser) {
         Voting voting = votingRepository.findById(votingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Voting", "id", votingId));
 
-        if (!isAdmin && !isVoterRegisteredForVoting(voting, currentUser.getId())) {
+        boolean isVoterNotRegisteredForVoting = voting.getVoters().stream()
+                .noneMatch(e -> e.getId().equals(currentUser.getId()));
+
+        if (!currentUser.isAdmin() && isVoterNotRegisteredForVoting) {
             throw new UnauthorizedException();
         }
 
-        return VotingMapper.mapVotingToVotingResponse(voting, isAdmin);
-    }
-
-    private boolean isVoterRegisteredForVoting(Voting voting, Long voterId) {
-        return voting.getVoters().stream().anyMatch(e -> e.getId().equals(voterId));
+        return voting;
     }
 
     public Voting createVoting(VotingRequest votingRequest) {
@@ -72,4 +101,6 @@ public class VotingService {
 
         return votingRepository.save(voting);
     }
+
+
 }
