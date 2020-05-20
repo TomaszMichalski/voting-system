@@ -4,6 +4,8 @@ import com.voting.model.Voting;
 import com.voting.service.VotingService;
 import com.voting.service.payload.ApiResponse;
 import com.voting.service.payload.VotingRequest;
+import com.voting.service.payload.VotingResponse;
+import com.voting.service.payload.VotingResultsResponse;
 import com.voting.service.security.CurrentUser;
 import com.voting.service.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/votings")
@@ -29,25 +32,25 @@ public class VotingController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public ResponseEntity<?> getVotings(@CurrentUser UserPrincipal currentUser) {
+    public ResponseEntity<List<VotingResponse>> getVotings(@CurrentUser UserPrincipal currentUser) {
         return ResponseEntity.ok(votingService.getAllVotings(currentUser));
     }
 
     @GetMapping("/{votingId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public ResponseEntity<?> getVotingById(@CurrentUser UserPrincipal currentUser, @PathVariable Long votingId) {
+    public ResponseEntity<VotingResponse> getVotingById(@CurrentUser UserPrincipal currentUser, @PathVariable Long votingId) {
         return ResponseEntity.ok(votingService.getVotingResponseById(votingId, currentUser));
     }
 
     @GetMapping("/{votingId}/results")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public ResponseEntity<?> getVotingResultsById(@CurrentUser UserPrincipal currentUser, @PathVariable Long votingId) {
+    public ResponseEntity<VotingResultsResponse> getVotingResultsById(@CurrentUser UserPrincipal currentUser, @PathVariable Long votingId) {
         return ResponseEntity.ok(votingService.getVotingResultsById(votingId, currentUser));
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> createVoting(@Valid @RequestBody VotingRequest votingRequest) {
+    public ResponseEntity<ApiResponse> createVoting(@Valid @RequestBody VotingRequest votingRequest) {
         Voting voting = votingService.createVoting(votingRequest);
 
         URI location = ServletUriComponentsBuilder

@@ -6,6 +6,8 @@ import com.voting.service.payload.OptionResultsResponse;
 import com.voting.service.payload.VoterSummary;
 import com.voting.service.payload.VotingResponse;
 import com.voting.service.payload.VotingResultsResponse;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class VotingMapper {
 
     public static VotingResponse mapVotingToVotingResponse(Voting voting, boolean isAdmin) {

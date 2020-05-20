@@ -1,6 +1,5 @@
 package com.voting.service.config;
 
-import com.voting.model.RoleName;
 import com.voting.service.security.CustomUserDetailsService;
 import com.voting.service.security.JwtAuthenticationEntryPoint;
 import com.voting.service.security.JwtAuthenticationFilter;

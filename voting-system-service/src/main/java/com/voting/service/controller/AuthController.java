@@ -49,7 +49,7 @@ public class AuthController {
     JwtTokenProvider tokenProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtAuthenticationResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -65,7 +65,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
         if(voterRepository.existsByEmail(registerRequest.getEmail())) {
             return new ResponseEntity<>(new ApiResponse(false, "Email is already in use."),
                     HttpStatus.BAD_REQUEST);

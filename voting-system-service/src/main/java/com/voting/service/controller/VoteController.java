@@ -25,7 +25,7 @@ public class VoteController {
 
     @PostMapping("votings/{votingId}/votes")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> vote(@CurrentUser UserPrincipal currentUser,
+    public ResponseEntity<ApiResponse> vote(@CurrentUser UserPrincipal currentUser,
                                   @PathVariable Long votingId,
                                   @Valid @RequestBody VoteRequest voteRequest) {
         voteService.vote(votingId, voteRequest, currentUser);
