@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class OptionResponse {
 
-    private final long id;
+    private final Long id;
     private final String name;
 
 }

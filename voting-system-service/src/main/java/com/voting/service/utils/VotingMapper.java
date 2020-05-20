@@ -26,7 +26,7 @@ public class VotingMapper {
                 .name(voting.getName())
                 .start(voting.getStart())
                 .end(voting.getEnd())
-                .singleChoice(voting.isSingleChoice())
+                .singleChoice(voting.getSingleChoice())
                 .isExpired(voting.getEnd().isBefore(now))
                 .options(optionResponses);
 

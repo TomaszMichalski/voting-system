@@ -28,7 +28,7 @@ public class Voting {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @EqualsAndHashCode.Include()
     private String name;
@@ -41,7 +41,7 @@ public class Voting {
     @EqualsAndHashCode.Include()
     private LocalDateTime end;
 
-    private boolean singleChoice;
+    private Boolean singleChoice;
 
     @OneToMany(mappedBy = "voting", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Option> options = new ArrayList<>();

@@ -53,7 +53,7 @@ public class VoteService {
     private Option toVotingOption(Voting voting, Long optionId) {
         return voting.getOptions()
                 .stream()
-                .filter(votingOption -> votingOption.getId() == optionId)
+                .filter(votingOption -> votingOption.getId().equals(optionId))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Option", "id", optionId));
     }

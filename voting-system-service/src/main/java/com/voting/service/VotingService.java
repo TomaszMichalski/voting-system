@@ -5,6 +5,8 @@ import com.voting.db.VotingRepository;
 import com.voting.model.Option;
 import com.voting.model.Voter;
 import com.voting.model.Voting;
+import com.voting.service.exception.UnauthorizedException;
+import com.voting.service.exception.ResourceNotFoundException;
 import com.voting.service.payload.VotingRequest;
 import com.voting.service.payload.VotingResponse;
 import com.voting.service.security.UserPrincipal;
@@ -37,6 +39,22 @@ public class VotingService {
         return votings.stream()
                 .map(e -> VotingMapper.mapVotingToVotingResponse(e, isAdmin))
                 .collect(Collectors.toList());
+    }
+
+    public VotingResponse getVotingById(Long votingId, UserPrincipal currentUser) {
+        boolean isAdmin = currentUser.isAdmin();
+        Voting voting = votingRepository.findById(votingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Voting", "id", votingId));
+
+        if (!isAdmin && !isVoterRegisteredForVoting(voting, currentUser.getId())) {
+            throw new UnauthorizedException();
+        }
+
+        return VotingMapper.mapVotingToVotingResponse(voting, isAdmin);
+    }
+
+    private boolean isVoterRegisteredForVoting(Voting voting, Long voterId) {
+        return voting.getVoters().stream().anyMatch(e -> e.getId().equals(voterId));
     }
 
     public Voting createVoting(VotingRequest votingRequest) {

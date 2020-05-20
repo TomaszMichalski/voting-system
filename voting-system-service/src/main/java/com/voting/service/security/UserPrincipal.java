@@ -20,7 +20,7 @@ public class UserPrincipal implements UserDetails {
 
     @Getter
     @NonNull
-    private final long id;
+    private final Long id;
 
     @NonNull
     private final String name;
@@ -95,7 +95,7 @@ public class UserPrincipal implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserPrincipal that = (UserPrincipal) o;
-        return id == that.id;
+        return Objects.equals(id, that.id);
     }
 
     @Override

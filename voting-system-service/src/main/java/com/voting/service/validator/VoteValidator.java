@@ -34,15 +34,15 @@ public class VoteValidator {
             throw new BadRequestException("Already voted in this voting.");
         }
 
-        if (voting.isSingleChoice() && voteRequest.getOptionIds().size() > 1) {
+        if (voting.getSingleChoice() && voteRequest.getOptionIds().size() > 1) {
             throw new BadRequestException("Voting allows only single choice.");
         }
     }
 
     private boolean voterAlreadyVoted(Voter voter, Voting voting) {
         return StreamSupport.stream(voteRepository.findAll().spliterator(), false)
-                .filter(vote -> vote.getId().getVotingId() == voting.getId())
-                .anyMatch(vote -> vote.getId().getVoterId() == voter.getId());
+                .filter(vote -> vote.getId().getVotingId().equals(voting.getId()))
+                .anyMatch(vote -> vote.getId().getVoterId().equals(voter.getId()));
     }
 
     private boolean voterRegisteredForVoting(Voter voter, Voting voting) {
