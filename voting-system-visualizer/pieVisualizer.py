@@ -4,8 +4,9 @@ MAX_SUBPLOTS = 4
 
 
 class PieVisualizer:
-    def __init__(self, votes):
-        self.votes = votes
+    def __init__(self, votings_names):
+        self.votings_names = votings_names
+        self.votes = {}
         self.fig, self.ax = plt.subplots()
         self.ax.axis('equal')
         self.plot('')
