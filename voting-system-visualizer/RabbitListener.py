@@ -21,7 +21,7 @@ class RabbitListener():
         if properties.headers:
             for key, value in properties.headers.items():
                 print('key: ', key, 'value: ', str(value))
-            self.visualizer.update_votes(properties.headers)
+            self.visualizer.update_votes(properties.type, properties.headers)
 
     def start_consuming(self):
         self.channel.start_consuming()

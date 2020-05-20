@@ -21,6 +21,7 @@ public class ResultsBroker {
     public void publishResults(String name, HashMap<String, Object> votes) {
     	try {
         	this.messageBroker.publishEmptyMsg(name, votes);
+        	System.out.println("Results send! Voting:" + name + ", results: " + votes.toString());
     	}catch(IOException e) {
     		e.printStackTrace();
     	}

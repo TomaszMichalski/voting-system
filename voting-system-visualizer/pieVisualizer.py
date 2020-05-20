@@ -1,21 +1,24 @@
 import matplotlib.pyplot as plt
 
+MAX_SUBPLOTS = 4
+
 
 class PieVisualizer:
     def __init__(self, votes):
         self.votes = votes
         self.fig, self.ax = plt.subplots()
         self.ax.axis('equal')
-        self.plot()
+        self.plot('')
 
-    def update_votes(self, votes):
+    def update_votes(self, title, votes):
         self.votes = votes
-        self.plot()
+        self.plot(title)
 
-    def plot(self):
+    def plot(self, title):
         labels, results = dict_to_labels_and_values(self.votes)
         plt.cla()
         self.ax.pie(results, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)
+        plt.title(title)
         plt.pause(0.1)
 
 

@@ -6,7 +6,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeoutException;
 
 public class ResultsBrokingDemo {
-	private static final int pauseDuration = 1500;
 	
 	public static void main(String[] args) throws InterruptedException {
 		ResultsBroker resultsBroker;
@@ -27,14 +26,20 @@ public class ResultsBrokingDemo {
         votes.put("Candidate 4", 0);
         votes.put("Candidate 5", 0);
         while (true) {
+        		int pauseDuration = ThreadLocalRandom.current().nextInt(300, 1500);
         		Thread.sleep(pauseDuration);
+
             	votes.put("Candidate 2", (int)votes.get("Candidate 2") + ThreadLocalRandom.current().nextInt(0, 38));
                 votes.put("Candidate 4", (int)votes.get("Candidate 4") + ThreadLocalRandom.current().nextInt(0, 34));
                 votes.put("Candidate 1", (int)votes.get("Candidate 1") + ThreadLocalRandom.current().nextInt(0, 14));
                 votes.put("Candidate 3", (int)votes.get("Candidate 3") + ThreadLocalRandom.current().nextInt(0, 8));
                 votes.put("Candidate 5", (int)votes.get("Candidate 5") + ThreadLocalRandom.current().nextInt(0, 6));
                 
-                resultsBroker.publishResults("WYBORY PREZYDENCKIE 2020", votes);
+                if(pauseDuration % 2 == 0) {
+                	resultsBroker.publishResults("WYBORY PREZYDENCKIE 2020", votes);
+                } else {
+                	resultsBroker.publishResults("WYBORY PRZYKLADOWE", votes);
+                }
         }
 
 	}

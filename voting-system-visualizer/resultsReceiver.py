@@ -15,9 +15,9 @@ class ResultsReceiver:
         print('[ResultsReceiver] Starting ...')
         channel = self.create_channel()
         print('[ResultsReceiver] Connection and channel created.')
-        self.loop_user_input(channel)
+        self.consume_results(channel)
 
-    def loop_user_input(self, channel):
+    def consume_results(self, channel):
         rl = RabbitListener.RabbitListener(channel, pieVisualizer.PieVisualizer({}))
         rl.start_consuming()
 
