@@ -59,7 +59,6 @@ export const LoginPage = () => {
   const handleLoginSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(userActions.getUser(email, name));
     dispatch(userActions.login(email, password));
   };
   

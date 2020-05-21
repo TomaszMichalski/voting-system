@@ -25,8 +25,8 @@ function App(props) {
         <Route exact path="/" component={HomePage} />
         <Route path="/profile-page" component={ProfilePage} />
         <Route path="/login-page" component={LoginPage} />
-        <Route path="/voting-page" component={VotingPage} />
-        <Route path="/result-page" component={ResultPage} />
+        <Route path="/voting-page/:id" component={VotingPage} />
+        <Route path="/result-page/:id" component={ResultPage} />
         <Route path="*" component={NotFound} />
       </Switch>
     </Router>

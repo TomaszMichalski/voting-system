@@ -11,30 +11,18 @@ import { makeStyles } from "@material-ui/core/styles";
 import Footer from "components/Footer/Footer.js";
 import GridContainer from "components/Grid/GridContainer.js";
 
-import Button from "components/CustomButtons/Button.js";
 import Menu from "components/Menu/Menu.js";
 import Parallax from "components/Parallax/Parallax.js";
+import { SingleChoice } from "./Sections/SingleChoice.js";
+import { MultiChoice } from "./Sections/MultiChoice.js";
 
 import styles from "assets/jss/material-kit-react/views/landingPage.js";
-
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
 
 import { votingActions } from "redux_elems/_actions/vote.actions";
 
 const useStyles = makeStyles(styles);
 
 const useCustomStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(3),
-  },
-  button: {
-    margin: theme.spacing(1, 1, 0, 0),
-  },
   votingContainer: {
     backgroundColor: "#fff",
     width: "100%",
@@ -42,36 +30,16 @@ const useCustomStyles = makeStyles((theme) => ({
   },
 }));
 
-export const VotingPage = () => {
+export const VotingPage = (props) => {
   const classes = useStyles();
   const customClasses = useCustomStyles();
 
+  const { match } = props;
+  const { id } = match.params;
+
   const options = useSelector((state) => state.option.options);
   const dispatch = useDispatch();
-  useEffect(() => dispatch(votingActions.getOptions()), []);
-
-  const [value, setValue] = React.useState("");
-  const [error, setError] = React.useState(false);
-  const [helperText, setHelperText] = React.useState("Choose wisely");
-
-  const handleChange = (event) => {
-    setValue(event.target.value);
-    setHelperText(" ");
-    setError(false);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (value) {
-      setHelperText("You got it!");
-      setError(false);
-      dispatch(votingActions.vote(value));
-    } else {
-      setHelperText("Please select an option.");
-      setError(true);
-    }
-  };
+  useEffect(() => dispatch(votingActions.getOptions(id)), []);
 
   return localStorage.getItem("token") ? (
     <div>
@@ -80,40 +48,21 @@ export const VotingPage = () => {
         <div className={classes.container}>
           <GridContainer>
             <div className={customClasses.votingContainer}>
-              <form onSubmit={handleSubmit}>
-                <FormControl
-                  component="fieldset"
-                  error={error}
-                  className={customClasses.formControl}
-                >
-                  <FormLabel component="legend">Election</FormLabel>
-                  <RadioGroup
-                    aria-label="electionr"
-                    name="election1"
-                    value={value}
-                    onChange={handleChange}
-                  >
-                    {options
-                      ? options.map((val) => (
-                          <FormControlLabel
-                            value={val}
-                            control={<Radio />}
-                            label={val}
-                          />
-                        ))
-                      : null}
-                  </RadioGroup>
-                  <FormHelperText>{helperText}</FormHelperText>
-                  <Button
-                    type="submit"
-                    variant="outlined"
-                    color="primary"
-                    className={customClasses.button}
-                  >
-                    Vote
-                  </Button>
-                </FormControl>
-              </form>
+              {options ? (
+                options.singleChoice ? (
+                  <SingleChoice
+                    votingsName={options.name}
+                    options={options.options}
+                    id={id}
+                  />
+                ) : (
+                  <MultiChoice
+                    votingsName={options.name}
+                    options={options.options}
+                    id={id}
+                  />
+                )
+              ) : null}
             </div>
           </GridContainer>
         </div>

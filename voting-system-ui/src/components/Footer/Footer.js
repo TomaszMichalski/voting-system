@@ -41,14 +41,6 @@ export default function Footer(props) {
             </ListItem>
             <ListItem className={classes.inlineBlock}>
               <a
-                href="/voting-page"
-                className={classes.block}
-              >
-                Voting System
-              </a>
-            </ListItem>
-            <ListItem className={classes.inlineBlock}>
-              <a
                 href="/login-page"
                 className={classes.block}
               >

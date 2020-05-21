@@ -6,7 +6,8 @@ import classNames from "classnames";
 import { makeStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
 
-import { votingActions } from 'redux_elems/_actions/vote.actions.js';
+import { votingActions } from "redux_elems/_actions/vote.actions.js";
+import { userActions } from "redux_elems/_actions/user.actions.js";
 
 // core components;
 import Footer from "components/Footer/Footer.js";
@@ -27,11 +28,18 @@ export const ProfilePage = () => {
     classes.imgRoundedCircle,
     classes.imgFluid
   );
-  const user = useSelector((state) => state.user);
-  const votings = useSelector((state) => state.votings.votings);
-  console.log(votings)
+
   const dispatch = useDispatch();
-  useEffect(() => dispatch(votingActions.getVotings()), []);
+  useEffect(() => {
+    dispatch(votingActions.getVotings());
+    dispatch(userActions.getUser());
+  }, []);
+
+  const user = useSelector((state) => state.getUser.user);
+  const votings = useSelector((state) => state.votings.votings);
+
+  console.log(user);
+  console.log(votings);
 
   const token = localStorage.getItem("token");
   return token ? (
@@ -48,24 +56,40 @@ export const ProfilePage = () => {
                     <img src={avatar} alt="..." className={imageClasses} />
                   </div>
                   <div className={classes.name}>
-                    <h3 className={classes.title}>{`Welcome ${user.name || user.email}!`}</h3>
+                    <h3 className={classes.title}>{`Welcome ${
+                      user ? user.name : ""
+                    }!`}</h3>
+                    <p>{`Name: ${user ? user.name : ""}`}</p>
+                    <p>{`Email: ${user ? user.email : ""}`}</p>
                   </div>
                 </div>
               </GridItem>
             </GridContainer>
             <div className={classes.description}>
               <h3>See your voting:</h3>
-                {
-                  votings ? 
-                  <ul>
-                    {votings.map(voting => {
-                    return <li><a href="/voting-page">
-                      {voting.name} {'<3'}
-                    </a></li>
-                  })} 
-                  </ul>
-                  : null
-                }
+              {votings ? (
+                <ul style={{ listStyleType: "none", padding: 0 }}>
+                  {votings.map((voting) => {
+                    return (
+                      <li key={voting.id}>
+                        <GridContainer justify='center'>
+                          <GridItem xs={12} sm={12} md={2}>
+                            <p>{voting.name}</p>
+                          </GridItem>
+                          <GridItem xs={12} sm={12} md={1}>
+                            <a href={`/voting-page/${voting.id}`}>Vote</a>
+                          </GridItem>
+                          <GridItem xs={12} sm={12} md={3}>
+                            <a href={`/result-page/${voting.id}`}>
+                              See results
+                            </a>
+                          </GridItem>
+                        </GridContainer>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : null}
             </div>
           </div>
         </div>
@@ -79,4 +103,4 @@ export const ProfilePage = () => {
       }}
     />
   );
-}
+};

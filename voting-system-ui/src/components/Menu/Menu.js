@@ -40,15 +40,6 @@ export default function Menu() {
               Home
             </Button>
           </ListItem>
-          <ListItem className={classes.listItem}>
-            <Button
-              href="/voting-page"
-              className={classes.navLink}
-              color="transparent"
-            >
-              Voting System
-            </Button>
-          </ListItem>
           {
           localStorage.getItem('token')
           ?

@@ -2,7 +2,10 @@ import config from 'config';
 import { authHeader } from 'redux_elems/_helpers/auth-header';
 
 export const votingService = {
-    getVotings
+    getVotings,
+    getOptions,
+    vote,
+    getResults
 };
 
 function handleResponse(response) {
@@ -29,5 +32,37 @@ function getVotings() {
         headers: authHeader()
     };
 
-    return fetch(`http://localhost:8080/api/votings`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/votings`, requestOptions).then(handleResponse);
+}
+
+function getOptions(votingId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`${config.apiUrl}/votings/${votingId}`, requestOptions).then(handleResponse);
+}
+
+function vote(votingId, optionIds) {
+    const requestOptions = {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify({ optionIds })
+    };
+
+    return fetch(`${config.apiUrl}/votings/${votingId}/votes`, requestOptions)
+        .then(handleResponse)
+        .then(vote => {
+            return vote;
+        });
+}
+
+function getResults(votingId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`${config.apiUrl}/votings/${votingId}/results`, requestOptions).then(handleResponse);
 }

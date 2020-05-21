@@ -5,9 +5,7 @@ export const userService = {
     register,
     login,
     logout,
-    vote,
-    getResults,
-    getOptions
+    getUser
 };
 
 function login(email, password) {
@@ -17,7 +15,7 @@ function login(email, password) {
         body: JSON.stringify({ email, password })
     };
 
-    return fetch(`http://localhost:8080/api/auth/login`, requestOptions)
+    return fetch(`${config.apiUrl}/auth/login`, requestOptions)
         .then(handleResponse)
         .then(token => {
             localStorage.setItem('token', token.accessToken);
@@ -32,12 +30,21 @@ function register(name, email, password) {
         body: JSON.stringify({ name, email, password })
     };
 
-    return fetch(`http://localhost:8080/api/auth/register`, requestOptions)
+    return fetch(`${config.apiUrl}/auth/register`, requestOptions)
         .then(handleResponse);
 }
 
 function logout() {
     localStorage.removeItem('token');
+}
+
+function getUser() {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`${config.apiUrl}/users/me`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
@@ -56,36 +63,4 @@ function handleResponse(response) {
 
         return data;
     });
-}
-
-function vote(candidate) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ candidate })
-    };
-
-    return fetch(`${config.apiUrl}/voting/election`, requestOptions)
-        .then(handleResponse)
-        .then(vote => {
-            return vote;
-        });
-}
-
-function getResults() {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
-
-    return fetch(`${config.apiUrl}/voting/election/results`, requestOptions).then(handleResponse);
-}
-
-function getOptions() {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
-
-    return fetch(`${config.apiUrl}/voting/election/options`, requestOptions).then(handleResponse);
 }
