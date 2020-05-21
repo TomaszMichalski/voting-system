@@ -1,23 +1,24 @@
 import { voteConstants } from 'redux_elems/_constants/vote.constants';
-import { userService } from 'redux_elems/_services/user.services.js';
+import { votingService } from 'redux_elems/_services/voting.services.js';
 import { alertActions } from './alert.actions.js';
 import { history } from '../_helpers/history'
 
 export const votingActions = {
     vote,
     getResults,
-    getOptions
+    getOptions,
+    getVotings
 };
 
-function vote(candidate) {
+function vote(votingId, optionIds) {
     return dispatch => {
-        dispatch(request({ candidate }));
+        dispatch(request({ votingId }));
 
-        userService.vote(candidate)
+        votingService.vote(votingId, optionIds)
             .then(
-                vote => {
-                    dispatch(success(vote));
-                    history.push('/result-page');
+                message => {
+                    dispatch(success(message));
+                    history.push('/profile-page');
                 },
                 error => {
                     dispatch(failure(error));
@@ -33,11 +34,11 @@ function vote(candidate) {
     function failure(error) { return { type: voteConstants.VOTING_FAILURE, error } }
 }
 
-function getOptions() {
+function getOptions(votingId) {
     return dispatch => {
-        dispatch(request());
+        dispatch(request(votingId));
 
-        userService.getOptions()
+        votingService.getOptions(votingId)
             .then(
                 options => dispatch(success(options)),
                 error => {
@@ -47,18 +48,18 @@ function getOptions() {
             );
     };
 
-    function request() { return { type: voteConstants.VOTING_OPTIONS_REQUEST } }
+    function request(votingId) { return { type: voteConstants.VOTING_OPTIONS_REQUEST, votingId } }
 
     function success(options) { return { type: voteConstants.VOTING_OPTIONS_SUCCESS, options } }
 
     function failure(error) { return { type: voteConstants.VOTING_OPTIONS_FAILURE, error } }
 }
 
-function getResults() {
+function getResults(votingId) {
     return dispatch => {
         dispatch(request());
 
-        userService.getResults()
+        votingService.getResults(votingId)
             .then(
                 results => dispatch(success(results)),
                 error => {
@@ -73,4 +74,25 @@ function getResults() {
     function success(results) { return { type: voteConstants.VOTING_RESULT_SUCCESS, results } }
 
     function failure(error) { return { type: voteConstants.VOTING_RESULT_FAILURE, error } }
+}
+
+function getVotings() {
+    return dispatch => {
+        dispatch(request());
+
+        votingService.getVotings()
+            .then(
+                votings => dispatch(success(votings)),
+                error => {
+                    dispatch(failure(error));
+                    dispatch(alertActions.error(error))
+                }
+            );
+    };
+
+    function request() { return { type: voteConstants.USER_VOTING_REQUEST } }
+
+    function success(votings) { return { type: voteConstants.USER_VOTING_SUCCESS, votings } }
+
+    function failure(error) { return { type: voteConstants.USER_VOTING_FAILURE, error } }
 }

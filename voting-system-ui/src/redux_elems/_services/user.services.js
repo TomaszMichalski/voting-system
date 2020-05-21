@@ -2,43 +2,49 @@ import config from 'config';
 import { authHeader } from 'redux_elems/_helpers/auth-header';
 
 export const userService = {
+    register,
     login,
     logout,
-    getAll,
-    vote,
-    getResults,
-    getOptions
+    getUser
 };
 
-function login(username, password) {
+function login(email, password) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ email, password })
     };
 
-    return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
+    return fetch(`${config.apiUrl}/auth/login`, requestOptions)
         .then(handleResponse)
-        .then(user => {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('user', JSON.stringify(user));
+        .then(token => {
+            localStorage.setItem('token', token.accessToken);
+            return token;
+        })
+}
 
-            return user;
-        });
+function register(name, email, password) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+    };
+
+    return fetch(`${config.apiUrl}/auth/register`, requestOptions)
+        .then(handleResponse);
 }
 
 function logout() {
-    // remove user from local storage to log user out
-    localStorage.removeItem('user');
+    localStorage.removeItem('token');
 }
 
-function getAll() {
+function getUser() {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
 
-    return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/users/me`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
@@ -57,36 +63,4 @@ function handleResponse(response) {
 
         return data;
     });
-}
-
-function vote(candidate) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ candidate })
-    };
-
-    return fetch(`${config.apiUrl}/voting/election`, requestOptions)
-        .then(handleResponse)
-        .then(vote => {
-            return vote;
-        });
-}
-
-function getResults() {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
-
-    return fetch(`${config.apiUrl}/voting/election/results`, requestOptions).then(handleResponse);
-}
-
-function getOptions() {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
-
-    return fetch(`${config.apiUrl}/voting/election/options`, requestOptions).then(handleResponse);
 }

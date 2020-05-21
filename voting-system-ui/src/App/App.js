@@ -4,7 +4,7 @@ import { Router, Route, Switch } from "react-router-dom";
 
 import { history } from 'redux_elems/_helpers/history';
 
-import ProfilePage from "views/ProfilePage/ProfilePage.js";
+import { ProfilePage } from "views/ProfilePage/ProfilePage.js";
 import { LoginPage } from "views/LoginPage/LoginPage.js";
 import { VotingPage } from "views/VotingPage/VotingPage.js";
 import { HomePage } from "views/HomePage/HomePage.js";
@@ -25,8 +25,8 @@ function App(props) {
         <Route exact path="/" component={HomePage} />
         <Route path="/profile-page" component={ProfilePage} />
         <Route path="/login-page" component={LoginPage} />
-        <Route path="/voting-page" component={VotingPage} />
-        <Route path="/result-page" component={ResultPage} />
+        <Route path="/voting-page/:id" component={VotingPage} />
+        <Route path="/result-page/:id" component={ResultPage} />
         <Route path="*" component={NotFound} />
       </Switch>
     </Router>

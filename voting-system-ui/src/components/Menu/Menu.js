@@ -40,17 +40,8 @@ export default function Menu() {
               Home
             </Button>
           </ListItem>
-          <ListItem className={classes.listItem}>
-            <Button
-              href="/voting-page"
-              className={classes.navLink}
-              color="transparent"
-            >
-              Voting System
-            </Button>
-          </ListItem>
           {
-          localStorage.getItem('user')
+          localStorage.getItem('token')
           ?
           <>
             <ListItem className={classes.listItem}>
@@ -65,7 +56,7 @@ export default function Menu() {
             <ListItem className={classes.listItem}>
               <Button
                 href="/"
-                onClick={() => localStorage.removeItem('user')}
+                onClick={() => localStorage.removeItem('token')}
                 className={classes.registerNavLink}
                 color="danger"
                 round

@@ -3,16 +3,20 @@ import { alert } from './alert.reducer';
 import { authentication } from './authentication.reducer';
 import { option } from './options.reducer';
 import { result } from './result.reducer';
-import { users } from './users.reducer';
+import { getUser } from './user.reducer';
 import { voting } from './vote.reducer';
+import { authorization } from './authorization.reducer';
+import { votings } from './voting.reducer';
 
 const reducer = combineReducers({
     alert, 
     authentication,
+    authorization,
     option,
     result,
-    users,
-    voting
+    getUser,
+    voting,
+    votings
 });
 
 export default reducer;

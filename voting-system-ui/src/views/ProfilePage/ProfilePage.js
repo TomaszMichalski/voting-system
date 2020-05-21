@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
+
+import { votingActions } from "redux_elems/_actions/vote.actions.js";
+import { userActions } from "redux_elems/_actions/user.actions.js";
 
 // core components;
 import Footer from "components/Footer/Footer.js";
@@ -17,7 +21,7 @@ import styles from "assets/jss/material-kit-react/views/profilePage.js";
 
 const useStyles = makeStyles(styles);
 
-export default function ProfilePage(props) {
+export const ProfilePage = () => {
   const classes = useStyles();
   const imageClasses = classNames(
     classes.imgRaised,
@@ -25,8 +29,20 @@ export default function ProfilePage(props) {
     classes.imgFluid
   );
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  return user ? (
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(votingActions.getVotings());
+    dispatch(userActions.getUser());
+  }, []);
+
+  const user = useSelector((state) => state.getUser.user);
+  const votings = useSelector((state) => state.votings.votings);
+
+  console.log(user);
+  console.log(votings);
+
+  const token = localStorage.getItem("token");
+  return token ? (
     <div>
       <Menu />
       <Parallax small filter image={require("assets/img/profile-bg.jpg")} />
@@ -40,21 +56,40 @@ export default function ProfilePage(props) {
                     <img src={avatar} alt="..." className={imageClasses} />
                   </div>
                   <div className={classes.name}>
-                    <h3 className={classes.title}>{`Welcome ${user.firstName} ${user.lastName}!`}</h3>
-                    <p>{`Nickname: ${user.username}`}</p>
-                    <p>{`First name: ${user.firstName}`}</p>
-                    <p>{`Last name: ${user.lastName}`}</p>
+                    <h3 className={classes.title}>{`Welcome ${
+                      user ? user.name : ""
+                    }!`}</h3>
+                    <p>{`Name: ${user ? user.name : ""}`}</p>
+                    <p>{`Email: ${user ? user.email : ""}`}</p>
                   </div>
                 </div>
               </GridItem>
             </GridContainer>
             <div className={classes.description}>
               <h3>See your voting:</h3>
-
-                  <a href="/voting-page">
-                    Presidental Election
-                  </a>
-  
+              {votings ? (
+                <ul style={{ listStyleType: "none", padding: 0 }}>
+                  {votings.map((voting) => {
+                    return (
+                      <li key={voting.id}>
+                        <GridContainer justify='center'>
+                          <GridItem xs={12} sm={12} md={2}>
+                            <p>{voting.name}</p>
+                          </GridItem>
+                          <GridItem xs={12} sm={12} md={1}>
+                            <a href={`/voting-page/${voting.id}`}>Vote</a>
+                          </GridItem>
+                          <GridItem xs={12} sm={12} md={3}>
+                            <a href={`/result-page/${voting.id}`}>
+                              See results
+                            </a>
+                          </GridItem>
+                        </GridContainer>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : null}
             </div>
           </div>
         </div>
@@ -68,4 +103,4 @@ export default function ProfilePage(props) {
       }}
     />
   );
-}
+};
