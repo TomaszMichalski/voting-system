@@ -5,7 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface VotingRepository extends CrudRepository<Voting, Long> {
@@ -14,7 +13,5 @@ public interface VotingRepository extends CrudRepository<Voting, Long> {
 
     @SuppressWarnings("SpringDataRepositoryMethodParametersInspection")
     List<Voting> findByVoters_Id(Long voterId);
-
-    Optional<Voting> findById(Long votingId);
 
 }

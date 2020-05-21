@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 public interface VoteRepository extends CrudRepository<Vote, VoteId> {
 
+    List<Vote> findAll();
+
     @SuppressWarnings("SpringDataRepositoryMethodReturnTypeInspection")
     @Query("SELECT NEW com.voting.model.OptionVoteCount(vote.option.id, count(vote)) FROM Vote vote "
             + "WHERE vote.option.voting.id = :votingId GROUP BY vote.option.id")

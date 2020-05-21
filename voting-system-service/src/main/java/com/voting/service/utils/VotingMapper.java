@@ -3,7 +3,7 @@ package com.voting.service.utils;
 import com.voting.model.Voting;
 import com.voting.service.payload.OptionResponse;
 import com.voting.service.payload.OptionResultsResponse;
-import com.voting.service.payload.VoterSummary;
+import com.voting.service.payload.UserSummary;
 import com.voting.service.payload.VotingResponse;
 import com.voting.service.payload.VotingResultsResponse;
 import lombok.AccessLevel;
@@ -37,8 +37,8 @@ public class VotingMapper {
                 .options(optionResponses);
 
         if (isAdmin) {
-            Set<VoterSummary> voterSummaries = voting.getVoters().stream()
-                    .map(voter -> VoterSummary.builder()
+            Set<UserSummary> voterSummaries = voting.getVoters().stream()
+                    .map(voter -> UserSummary.builder()
                             .id(voter.getId())
                             .name(voter.getName())
                             .email(voter.getEmail())

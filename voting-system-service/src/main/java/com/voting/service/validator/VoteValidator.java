@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.stream.StreamSupport;
 
 @Component
 public class VoteValidator {
@@ -40,7 +39,7 @@ public class VoteValidator {
     }
 
     private boolean voterAlreadyVoted(Voter voter, Voting voting) {
-        return StreamSupport.stream(voteRepository.findAll().spliterator(), false)
+        return voteRepository.findAll().stream()
                 .filter(vote -> vote.getId().getVotingId().equals(voting.getId()))
                 .anyMatch(vote -> vote.getId().getVoterId().equals(voter.getId()));
     }

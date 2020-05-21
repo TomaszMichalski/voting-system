@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Getter
 public class UserPrincipal implements UserDetails {
 
     @Getter

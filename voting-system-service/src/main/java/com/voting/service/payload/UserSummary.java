@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class VoterSummary {
+public class UserSummary {
 
     private final Long id;
     private final String name;

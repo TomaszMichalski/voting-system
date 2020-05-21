@@ -11,9 +11,12 @@ import java.util.Set;
 @Repository
 public interface VoterRepository extends CrudRepository<Voter, Long> {
 
+    List<Voter> findAll();
+
     Optional<Voter> findByEmail(String email);
 
     Set<Voter> findByIdIn(List<Long> userIds);
 
     Boolean existsByEmail(String email);
+
 }
