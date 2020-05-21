@@ -8,8 +8,8 @@ import com.voting.model.OptionVoteCount;
 import com.voting.model.Vote;
 import com.voting.model.Voter;
 import com.voting.model.Voting;
-import com.voting.service.exception.UnauthorizedException;
 import com.voting.service.exception.ResourceNotFoundException;
+import com.voting.service.exception.UnauthorizedException;
 import com.voting.service.payload.VotingRequest;
 import com.voting.service.payload.VotingResponse;
 import com.voting.service.payload.VotingResultsResponse;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,14 +45,23 @@ public class VotingService {
         } else {
             votings = votingRepository.findByVoters_Id(currentUser.getId());
         }
-        return votings.stream()
-                .map(e -> VotingMapper.mapVotingToVotingResponse(e, isAdmin))
-                .collect(Collectors.toList());
+        Map<Long, Optional<List<Long>>> votingIdToUserSelectedOptionIds = votings.stream()
+                .collect(Collectors.toMap(
+                        Voting::getId,
+                        e -> getUserSelectedOptionIds(e.getId(), currentUser)
+                ));
+
+        return votings.stream().map(e -> {
+            List<Long> userSelectedOptionIds = votingIdToUserSelectedOptionIds.get(e.getId()).orElse(null);
+            return VotingMapper.mapVotingToVotingResponse(e, userSelectedOptionIds, isAdmin);
+        }).collect(Collectors.toList());
     }
 
     public VotingResponse getVotingResponseById(Long votingId, UserPrincipal currentUser) {
         Voting voting = getVotingById(votingId, currentUser);
-        return VotingMapper.mapVotingToVotingResponse(voting, currentUser.isAdmin());
+        List<Long> userSelectedOptionIds = getUserSelectedOptionIds(votingId, currentUser).orElse(null);
+
+        return VotingMapper.mapVotingToVotingResponse(voting, userSelectedOptionIds, currentUser.isAdmin());
     }
 
     public VotingResultsResponse getVotingResultsById(Long votingId, UserPrincipal currentUser) {
@@ -61,15 +71,19 @@ public class VotingService {
         Map<Long, Long> optionIdsToVoteCounts = voteCounts.stream()
                 .collect(Collectors.toMap(OptionVoteCount::getOptionId, OptionVoteCount::getVoteCount));
 
-        List<Long> userSelectedOptionIds = null;
-        if (!currentUser.isAdmin()) {
-            List<Vote> userVotes = voteRepository.findByVoter_IdAndVoter_Votings_Id(currentUser.getId(), votingId);
-            userSelectedOptionIds = userVotes.stream()
-                    .map(e -> e.getOption().getId())
-                    .collect(Collectors.toList());
-        }
+        List<Long> userSelectedOptionIds = getUserSelectedOptionIds(votingId, currentUser).orElse(null);
 
         return VotingMapper.mapVotingToVotingResultsResponse(voting, optionIdsToVoteCounts, userSelectedOptionIds);
+    }
+
+    private Optional<List<Long>> getUserSelectedOptionIds(Long votingId, UserPrincipal currentUser) {
+        if (!currentUser.isAdmin()) {
+            List<Vote> userVotes = voteRepository.findByVoter_IdAndVoter_Votings_Id(currentUser.getId(), votingId);
+            return Optional.of(userVotes.stream()
+                    .map(e -> e.getOption().getId())
+                    .collect(Collectors.toList()));
+        }
+        return Optional.empty();
     }
 
     private Voting getVotingById(Long votingId, UserPrincipal currentUser) {

@@ -18,7 +18,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class VotingMapper {
 
-    public static VotingResponse mapVotingToVotingResponse(Voting voting, boolean isAdmin) {
+    public static VotingResponse mapVotingToVotingResponse(Voting voting,
+                                                           List<Long> userSelectedOptionIds,
+                                                           boolean isAdmin) {
         LocalDateTime now = LocalDateTime.now();
         List<OptionResponse> optionResponses = voting.getOptions().stream()
                 .map(option -> OptionResponse.builder()
@@ -34,6 +36,7 @@ public class VotingMapper {
                 .end(voting.getEnd())
                 .singleChoice(voting.getSingleChoice())
                 .isExpired(voting.getEnd().isBefore(now))
+                .selectedOptionIds(userSelectedOptionIds)
                 .options(optionResponses);
 
         if (isAdmin) {

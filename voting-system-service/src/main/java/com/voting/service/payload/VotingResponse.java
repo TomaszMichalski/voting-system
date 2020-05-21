@@ -21,6 +21,9 @@ public class VotingResponse {
     private final List<OptionResponse> options;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private final List<Long> selectedOptionIds;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final Set<UserSummary> voters;
 
 }
