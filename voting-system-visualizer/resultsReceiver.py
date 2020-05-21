@@ -12,13 +12,17 @@ class ResultsReceiver:
     exchangeName = 'bunny_exchange'
     exchangeType = 'fanout'
 
-    def __init__(self, votings_names):
+
+    def __init__(self, votings_names, chart_type):
         self.votings_names = votings_names
+        self.chart_type = chart_type
+
         self.channel = self.create_channel()
         self.consume_results()
 
     def consume_results(self):
-        rl = RabbitListener.RabbitListener(self.channel, pieVisualizer.PieVisualizer(self.votings_names))
+        rl = RabbitListener.RabbitListener(self.channel,
+                                           pieVisualizer.PieVisualizer(self.votings_names, self.chart_type))
         rl.start_consuming()
 
     def create_channel(self):
