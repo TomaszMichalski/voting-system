@@ -10,28 +10,24 @@ class ResultsReceiver:
     messageBrokerPwd = 'bunny1234'
     messageBrokerVirtualHost = 'bunny_host'
     exchangeName = 'bunny_exchange'
+    exchangeType = 'fanout'
 
-    def main(self):
-        print('[ResultsReceiver] starting ...')
-        channel = self.create_channel()
-        print('[ResultsReceiver] connection and channel created.')
-        self.loop_user_input(channel)
+    def __init__(self, votings_names):
+        self.votings_names = votings_names
+        self.channel = self.create_channel()
+        self.consume_results()
 
-    def loop_user_input(self, channel):
-        rl = RabbitListener.RabbitListener(channel, pieVisualizer.PieVisualizer({}))
+    def consume_results(self):
+        rl = RabbitListener.RabbitListener(self.channel, pieVisualizer.PieVisualizer(self.votings_names))
         rl.start_consuming()
 
     def create_channel(self):
         user_credentials = pika.credentials.PlainCredentials(self.messageBrokerUser, self.messageBrokerPwd)
-        self.connection = pika.BlockingConnection(
+        connection = pika.BlockingConnection(
             pika.ConnectionParameters(host=self.messageBrokerIp,
                                       virtual_host=self.messageBrokerVirtualHost,
                                       credentials=user_credentials)
         )
-        channel = self.connection.channel()
-        channel.exchange_declare(exchange=self.exchangeName, exchange_type='fanout')
+        channel = connection.channel()
+        channel.exchange_declare(exchange=self.exchangeName, exchange_type=self.exchangeType)
         return channel
-
-
-if __name__ == '__main__':
-    ResultsReceiver().main()
