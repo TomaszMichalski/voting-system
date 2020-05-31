@@ -8,6 +8,7 @@ import com.voting.model.OptionVoteCount;
 import com.voting.model.Vote;
 import com.voting.model.Voter;
 import com.voting.model.Voting;
+import com.voting.service.exception.BadRequestException;
 import com.voting.service.exception.ResourceNotFoundException;
 import com.voting.service.exception.UnauthorizedException;
 import com.voting.service.payload.VotingRequest;
@@ -18,6 +19,7 @@ import com.voting.service.utils.VotingMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +69,10 @@ public class VotingService {
     public VotingResultsResponse getVotingResultsById(Long votingId, UserPrincipal currentUser) {
         Voting voting = getVotingById(votingId, currentUser);
 
+        if (!currentUser.isAdmin() && LocalDateTime.now().isBefore(voting.getEnd())) {
+            throw new BadRequestException("Voting has not ended.");
+        }
+
         List<OptionVoteCount> voteCounts = voteRepository.countByVotingIdGroupByOptionId(votingId);
         Map<Long, Long> optionIdsToVoteCounts = voteCounts.stream()
                 .collect(Collectors.toMap(OptionVoteCount::getOptionId, OptionVoteCount::getVoteCount));
@@ -115,6 +121,4 @@ public class VotingService {
 
         return votingRepository.save(voting);
     }
-
-
 }
