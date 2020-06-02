@@ -3,19 +3,21 @@ package com.voting;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
+import java.io.FileNotFoundException;
 
 public class ResultsBroker {
-    public final static String messageBrokerIp = "127.0.0.1";
-    public final static String messageBrokerUser = "bunny";
-    public final static String messageBrokerPwd = "bunny1234";
-    public final static String messageBrokerVirtualHost = "bunny_host";
-    public final static String exchangeName =  "bunny_exchange";
 	private MessageBroker messageBroker;
-    
-    public ResultsBroker() throws IOException, TimeoutException {
+    private String confFilename; 
+	
+    public ResultsBroker(String confFile) throws IOException, TimeoutException, FileNotFoundException {
+    	this.confFilename = confFilename;
+    	ConfigReader configReader = new ConfigReader(confFile);
     	this.messageBroker = new MessageBroker(
-    			new ConnectionData(messageBrokerIp, messageBrokerUser, messageBrokerPwd, messageBrokerVirtualHost),
-    			new ExchangeData(exchangeName, "fanout"));
+    			new ConnectionData(configReader.getMessageBrokerIp(),
+    					configReader.getMessageBrokerUser(), 
+    					configReader.getMessageBrokerPwd(), 
+    					configReader.getMessageBrokerVirtualHost()),
+    			new ExchangeData(configReader.getExchangeName(), "fanout"));
     }
     
     public void publishResults(String name, HashMap<String, Object> votes) {
