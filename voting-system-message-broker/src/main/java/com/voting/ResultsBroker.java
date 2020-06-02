@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 public class ResultsBroker {
 	private MessageBroker messageBroker;
     private String confFilename;
-    private final String DEFAULT_CONFIG = "../voting-system-message-broker/src/main/java/com/voting/.conf";
+    private final String DEFAULT_CONFIG = "voting-system-message-broker/src/main/java/com/voting/.conf";
 	
     public ResultsBroker() throws IOException, TimeoutException, FileNotFoundException {
     	this.confFilename = DEFAULT_CONFIG;
