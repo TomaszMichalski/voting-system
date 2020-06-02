@@ -7,12 +7,10 @@ import java.util.concurrent.TimeoutException;
 
 public class ResultsBrokingDemo {
 	
-	private static final String CONF_FILE = "src/main/java/com/voting/.conf";
-	
 	public static void main(String[] args) throws InterruptedException {
 		ResultsBroker resultsBroker;
 		try {
-			resultsBroker = new ResultsBroker(CONF_FILE);
+			resultsBroker = new ResultsBroker();
 		} catch (IOException e) {
             e.printStackTrace();
             return;

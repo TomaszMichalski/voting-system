@@ -7,11 +7,23 @@ import java.io.FileNotFoundException;
 
 public class ResultsBroker {
 	private MessageBroker messageBroker;
-    private String confFilename; 
+    private String confFilename;
+    private final String DEFAULT_CONFIG = "../voting-system-message-broker/src/main/java/com/voting/.conf";
 	
-    public ResultsBroker(String confFile) throws IOException, TimeoutException, FileNotFoundException {
+    public ResultsBroker() throws IOException, TimeoutException, FileNotFoundException {
+    	this.confFilename = DEFAULT_CONFIG;
+    	ConfigReader configReader = new ConfigReader(confFilename);
+    	this.messageBroker = new MessageBroker(
+    			new ConnectionData(configReader.getMessageBrokerIp(),
+    					configReader.getMessageBrokerUser(), 
+    					configReader.getMessageBrokerPwd(), 
+    					configReader.getMessageBrokerVirtualHost()),
+    			new ExchangeData(configReader.getExchangeName(), "fanout"));
+    }
+    
+    public ResultsBroker(String confFilename) throws IOException, TimeoutException, FileNotFoundException {
     	this.confFilename = confFilename;
-    	ConfigReader configReader = new ConfigReader(confFile);
+    	ConfigReader configReader = new ConfigReader(confFilename);
     	this.messageBroker = new MessageBroker(
     			new ConnectionData(configReader.getMessageBrokerIp(),
     					configReader.getMessageBrokerUser(), 
