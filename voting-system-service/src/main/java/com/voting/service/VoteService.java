@@ -10,6 +10,7 @@ import com.voting.model.Voting;
 import com.voting.service.exception.BadRequestException;
 import com.voting.service.exception.ResourceNotFoundException;
 import com.voting.service.payload.VoteRequest;
+import com.voting.service.publish.ResultPublisher;
 import com.voting.service.security.UserPrincipal;
 import com.voting.service.validator.VoteValidator;
 import org.slf4j.Logger;
@@ -37,6 +38,9 @@ public class VoteService {
     @Autowired
     private VoteValidator voteValidator;
 
+    @Autowired
+    private ResultPublisher resultPublisher;
+
     public void vote(Long votingId, VoteRequest voteRequest, UserPrincipal currentUser) {
         Voting voting = votingRepository.findById(votingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Voting", "id", votingId));
@@ -55,6 +59,8 @@ public class VoteService {
                 .forEach(voteRepository::save);
 
         logger.info("Vote in voting " + voting.getId() + ", options " + toOptionLog(voteRequest.getOptionIds()));
+
+        resultPublisher.publishResults(voting);
     }
 
     private Option toVotingOption(Voting voting, Long optionId) {

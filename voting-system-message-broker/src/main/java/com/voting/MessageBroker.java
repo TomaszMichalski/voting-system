@@ -5,8 +5,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-import java.util.HashMap;
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 
@@ -20,7 +20,7 @@ public class MessageBroker {
     	this.channel = createChannel(connectionData);
     }
     
-    public void publishEmptyMsg(String msgType, HashMap<String, Object> headersMap) throws IOException {
+    public void publishEmptyMsg(String msgType, Map<String, Object> headersMap) throws IOException {
         AMQP.BasicProperties properties = new AMQP.BasicProperties();
         properties = properties.builder().headers(headersMap).type(msgType).build();
         channel.basicPublish(exchangeData.name, "", properties, null);

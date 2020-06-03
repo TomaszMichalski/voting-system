@@ -1,10 +1,13 @@
 package com.voting;
 
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.io.FileNotFoundException;
 
+@Component
 public class ResultsBroker {
 	private MessageBroker messageBroker;
     private String confFilename;
@@ -21,18 +24,7 @@ public class ResultsBroker {
     			new ExchangeData(configReader.getExchangeName(), "fanout"));
     }
     
-    public ResultsBroker(String confFilename) throws IOException, TimeoutException, FileNotFoundException {
-    	this.confFilename = confFilename;
-    	ConfigReader configReader = new ConfigReader(confFilename);
-    	this.messageBroker = new MessageBroker(
-    			new ConnectionData(configReader.getMessageBrokerIp(),
-    					configReader.getMessageBrokerUser(), 
-    					configReader.getMessageBrokerPwd(), 
-    					configReader.getMessageBrokerVirtualHost()),
-    			new ExchangeData(configReader.getExchangeName(), "fanout"));
-    }
-    
-    public void publishResults(String name, HashMap<String, Object> votes) {
+    public void publishResults(String name, Map<String, Object> votes) {
     	try {
         	this.messageBroker.publishEmptyMsg(name, votes);
         	System.out.println("Results send! Voting:" + name + ", results: " + votes.toString());
