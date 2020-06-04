@@ -15,6 +15,7 @@ public class VotingResultsResponse {
     private final String name;
     private final LocalDateTime start;
     private final LocalDateTime end;
+    private final Boolean isActive;
     private final Boolean isExpired;
     private final Boolean singleChoice;
     private final List<OptionResultsResponse> options;

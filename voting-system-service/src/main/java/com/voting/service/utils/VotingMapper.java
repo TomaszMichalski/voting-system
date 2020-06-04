@@ -21,7 +21,6 @@ public class VotingMapper {
     public static VotingResponse mapVotingToVotingResponse(Voting voting,
                                                            List<Long> userSelectedOptionIds,
                                                            boolean isAdmin) {
-        LocalDateTime now = LocalDateTime.now();
         List<OptionResponse> optionResponses = voting.getOptions().stream()
                 .map(option -> OptionResponse.builder()
                         .id(option.getId())
@@ -35,7 +34,8 @@ public class VotingMapper {
                 .start(voting.getStart())
                 .end(voting.getEnd())
                 .singleChoice(voting.getSingleChoice())
-                .isExpired(voting.getEnd().isBefore(now))
+                .isActive(isVotingActive(voting))
+                .isExpired(isVotingExpired(voting))
                 .selectedOptionIds(userSelectedOptionIds)
                 .options(optionResponses);
 
@@ -56,7 +56,6 @@ public class VotingMapper {
     public static VotingResultsResponse mapVotingToVotingResultsResponse(Voting voting,
                                                                          Map<Long, Long> optionIdsToVoteCounts,
                                                                          List<Long> userSelectedOptionIds) {
-        LocalDateTime now = LocalDateTime.now();
         List<OptionResultsResponse> optionResults = voting.getOptions().stream()
                 .map(option -> OptionResultsResponse.builder()
                         .id(option.getId())
@@ -71,9 +70,19 @@ public class VotingMapper {
                 .start(voting.getStart())
                 .end(voting.getEnd())
                 .singleChoice(voting.getSingleChoice())
-                .isExpired(voting.getEnd().isBefore(now))
+                .isActive(isVotingActive(voting))
+                .isExpired(voting.getEnd().isBefore(LocalDateTime.now()))
                 .options(optionResults)
                 .selectedOptionIds(userSelectedOptionIds)
                 .build();
+    }
+
+    private static boolean isVotingActive(Voting voting) {
+        LocalDateTime now = LocalDateTime.now();
+        return voting.getStart().isBefore(now) && voting.getEnd().isAfter(now);
+    }
+
+    private static Boolean isVotingExpired(Voting voting) {
+        return voting.getEnd().isBefore(LocalDateTime.now());
     }
 }
