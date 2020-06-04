@@ -5,6 +5,7 @@ import com.voting.db.VoterRepository;
 import com.voting.db.VotingRepository;
 import com.voting.model.Option;
 import com.voting.model.Vote;
+import com.voting.model.VoteResult;
 import com.voting.model.Voter;
 import com.voting.model.Voting;
 import com.voting.service.exception.BadRequestException;
@@ -41,7 +42,7 @@ public class VoteService {
     @Autowired
     private ResultPublisher resultPublisher;
 
-    public void vote(Long votingId, VoteRequest voteRequest, UserPrincipal currentUser) {
+    public VoteResult vote(Long votingId, VoteRequest voteRequest, UserPrincipal currentUser) {
         Voting voting = votingRepository.findById(votingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Voting", "id", votingId));
 
@@ -58,9 +59,9 @@ public class VoteService {
                 .map(option -> toVote(voter, option, voting, voteTime))
                 .forEach(voteRepository::save);
 
-        logger.info("Vote in voting " + voting.getId() + ", options " + toOptionLog(voteRequest.getOptionIds()));
-
         resultPublisher.publishResults(voting);
+
+        return new VoteResult(votingId, voteRequest.getOptionIds());
     }
 
     private Option toVotingOption(Voting voting, Long optionId) {
@@ -73,11 +74,5 @@ public class VoteService {
 
     private Vote toVote(Voter voter, Option selectedOption, Voting voting, LocalDateTime voteTime) {
         return new Vote(voter, selectedOption, voting, voteTime);
-    }
-
-    private String toOptionLog(List<Long> optionIds) {
-        return optionIds.stream()
-                .map(optionId -> String.valueOf(optionId.longValue()))
-                .collect(Collectors.joining(","));
     }
 }
