@@ -34,7 +34,7 @@ public class VotingMapper {
                 .start(voting.getStart())
                 .end(voting.getEnd())
                 .singleChoice(voting.getSingleChoice())
-                .isActive(isVotingActive(voting))
+                .isActive(isVotingActive(voting, userSelectedOptionIds))
                 .isExpired(isVotingExpired(voting))
                 .selectedOptionIds(userSelectedOptionIds)
                 .options(optionResponses);
@@ -70,16 +70,17 @@ public class VotingMapper {
                 .start(voting.getStart())
                 .end(voting.getEnd())
                 .singleChoice(voting.getSingleChoice())
-                .isActive(isVotingActive(voting))
-                .isExpired(voting.getEnd().isBefore(LocalDateTime.now()))
+                .isActive(isVotingActive(voting, userSelectedOptionIds))
+                .isExpired(isVotingExpired(voting))
                 .options(optionResults)
                 .selectedOptionIds(userSelectedOptionIds)
                 .build();
     }
 
-    private static boolean isVotingActive(Voting voting) {
+    private static boolean isVotingActive(Voting voting, List<Long> userSelectedOptionIds) {
         LocalDateTime now = LocalDateTime.now();
-        return voting.getStart().isBefore(now) && voting.getEnd().isAfter(now);
+        return userSelectedOptionIds != null && userSelectedOptionIds.isEmpty()
+                && voting.getStart().isBefore(now) && voting.getEnd().isAfter(now);
     }
 
     private static Boolean isVotingExpired(Voting voting) {
