@@ -20,7 +20,6 @@ public interface VoteRepository extends CrudRepository<Vote, VoteId> {
             + "WHERE vote.option.voting.id = :votingId GROUP BY vote.option.id")
     List<OptionVoteCount> countByVotingIdGroupByOptionId(@Param("votingId") Long votingId);
 
-    @SuppressWarnings("SpringDataRepositoryMethodParametersInspection")
-    List<Vote> findByVoter_IdAndVoter_Votings_Id(Long id, Long votingId);
+    List<Vote> findByVoter_Id_AndOption_Voting_Id(Long id, Long votingId);
 }
 

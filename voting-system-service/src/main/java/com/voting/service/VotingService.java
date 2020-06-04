@@ -84,7 +84,7 @@ public class VotingService {
 
     private Optional<List<Long>> getUserSelectedOptionIds(Long votingId, UserPrincipal currentUser) {
         if (!currentUser.isAdmin()) {
-            List<Vote> userVotes = voteRepository.findByVoter_IdAndVoter_Votings_Id(currentUser.getId(), votingId);
+            List<Vote> userVotes = voteRepository.findByVoter_Id_AndOption_Voting_Id(currentUser.getId(), votingId);
             return Optional.of(userVotes.stream()
                     .map(e -> e.getOption().getId())
                     .collect(Collectors.toList()));
