@@ -15,6 +15,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Menu from "components/Menu/Menu.js";
 import Parallax from "components/Parallax/Parallax.js";
+import Button from "components/CustomButtons/Button.js";
 
 import avatar from "assets/img/avatar.jpg";
 import styles from "assets/jss/material-kit-react/views/profilePage.js";
@@ -37,9 +38,6 @@ export const ProfilePage = () => {
 
   const user = useSelector((state) => state.getUser.user);
   const votings = useSelector((state) => state.votings.votings);
-
-  console.log(user);
-  console.log(votings);
 
   const token = localStorage.getItem("token");
   return token ? (
@@ -72,17 +70,27 @@ export const ProfilePage = () => {
                   {votings.map((voting) => {
                     return (
                       <li key={voting.id}>
-                        <GridContainer justify='center'>
-                          <GridItem xs={12} sm={12} md={2}>
-                            <p>{voting.name}</p>
+                        <GridContainer justify="center">
+                          <GridItem xs={12} sm={12} md={3}>
+                            <h4>{voting.name}</h4>
                           </GridItem>
-                          <GridItem xs={12} sm={12} md={1}>
-                            <a href={`/voting-page/${voting.id}`}>Vote</a>
+                          <GridItem xs={12} sm={12} md={2}>
+                            <Button
+                              href={`/voting-page/${voting.id}`}
+                              color="info"
+                              disabled={!voting.isActive}
+                            >
+                              Vote
+                            </Button>
                           </GridItem>
                           <GridItem xs={12} sm={12} md={3}>
-                            <a href={`/result-page/${voting.id}`}>
+                            <Button
+                              href={`/result-page/${voting.id}`}
+                              color="info"
+                              disabled={!voting.isExpired}
+                            >
                               See results
-                            </a>
+                            </Button>
                           </GridItem>
                         </GridContainer>
                       </li>
