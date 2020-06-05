@@ -4,7 +4,7 @@ import numpy as np
 MAX_SUBPLOTS = 4
 
 
-class PieVisualizer:
+class Visualizer:
 
     def __init__(self, votings_names, chart_type):
         self.votings_names = votings_names
@@ -84,7 +84,6 @@ def dict_to_sorted_labels_and_values(d):
     totalSum = sum(sorted_dict.values())
     if totalSum != 0:
         for key, value in sorted_dict.items():
-            print('totalSum: ', totalSum)
             sorted_dict[key] /= totalSum
             sorted_dict[key] *= 100
     return dict_to_labels_and_values(sorted_dict)
