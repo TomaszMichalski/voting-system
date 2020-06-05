@@ -29,6 +29,7 @@ public class MessageBroker {
     private Channel createChannel(ConnectionData connectionData) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(connectionData.ip);
+        factory.setPort(connectionData.port);
         factory.setUsername(connectionData.user);
         factory.setPassword(connectionData.pwd);
         factory.setVirtualHost(connectionData.virtualHost);

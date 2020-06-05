@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class ConfigReader {
 	private String filename;
 	private String messageBrokerIp;
+	private int messageBrokerPort;
     private String messageBrokerUser;
     private String messageBrokerPwd;
     private String messageBrokerVirtualHost;
@@ -19,6 +20,10 @@ public class ConfigReader {
 
     public String getMessageBrokerIp() {
     	return this.messageBrokerIp;
+    }
+    
+    public int getMessageBrokerPort() {
+    	return this.messageBrokerPort;
     }
     
     public String getMessageBrokerUser() {
@@ -40,6 +45,7 @@ public class ConfigReader {
     	File file = new File(this.filename);
     	
     	messageBrokerIp = loadMessageBrokerIp(file);
+    	messageBrokerPort = loadMessageBrokerPort(file);
     	messageBrokerUser = loadMessageBrokerUser(file);
     	messageBrokerPwd = loadMessageBrokerPwd(file);
     	messageBrokerVirtualHost = loadMessageBrokerVirtualHost(file);
@@ -47,7 +53,11 @@ public class ConfigReader {
     }
     
     private String loadMessageBrokerIp(File file) throws FileNotFoundException {
-    	return loadConfValue(file, "messageBrokerId:");
+    	return loadConfValue(file, "messageBrokerIp:");
+    }
+    
+    private int loadMessageBrokerPort(File file) throws FileNotFoundException {
+    	return Integer.parseInt(loadConfValue(file, "messageBrokerPort:"));
     }
     
     private String loadMessageBrokerUser(File file) throws FileNotFoundException {
